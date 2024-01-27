@@ -1,0 +1,60 @@
+﻿@page "/profile"
+@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
+@inject praktikaContext context
+@inject IJSRuntime JSRuntime
+
+@using System.Text.Json
+
+<link href="css/site.css" rel="stylesheet" />
+
+<h3>Профиль</h3>
+
+<hr />
+
+@if (User != null)
+{
+    <div>
+        <h4>Имя: </h4>
+        <p>@User.Username</p>
+    </div>
+
+    <div>
+        <h4>Email: </h4>
+        <p>@User.Email</p>
+    </div>
+
+    <div>
+        <h4>Пол: </h4>
+        <p>@User.Sex </p>
+    </div>
+    <div>
+        <h4>Рост: </h4>
+        <p>@User.Height </p>
+    </div>
+    <div>
+        <h4>Вес: </h4>
+        <p>@User.Weight </p>
+    </div>
+}
+else
+{
+    <div class="alert alert-danger">Пользователь не авторизован.</div>
+}
+
+@code {
+    private User User { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userJson = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "user");
+        if (!string.IsNullOrEmpty(userJson))
+        {
+            User = JsonSerializer.Deserialize<User>(userJson);
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/signin");
+        }
+    }
+}

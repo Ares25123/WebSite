@@ -1,0 +1,19 @@
+﻿@page "/products-season"
+@using Microsoft.EntityFrameworkCore;
+@inject praktikaContext context
+
+<h2>Cезонность продуктов</h2>
+
+@foreach (var product in products)
+{
+    <h3>Продукт: @product.ProductName</h3>
+    <p>Сезон: @product.Season</p>
+    <hr />
+}
+@code {
+    private List<Product> products = new List<Product>();
+    protected override async Task OnInitializedAsync()
+    {
+        products = await context.Products.ToListAsync();
+    }
+}

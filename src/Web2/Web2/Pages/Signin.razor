@@ -1,0 +1,59 @@
+﻿@page "/signin"
+@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
+@inject praktikaContext context
+@inject IJSRuntime JSRuntime
+
+@using System.Text.Json
+
+<link href="css/site.css" rel="stylesheet" />
+
+<h3>Авторизация</h3>
+
+<hr />
+
+<div style="margin-bottom: 10px;">
+    <h4>Email: </h4>
+    <input type="email" class="form-control" placeholder="Enter email" @bind-value="Email" />
+</div>
+
+<div style="margin-bottom: 10px;">
+    <h4>Password: </h4>
+    <input type="password" class="form-control" placeholder="Enter password" @bind-value="Password" />
+</div>
+
+<button class="btn btn-primary" @onclick="Login">Войти</button>
+
+@if (!string.IsNullOrEmpty(ErrorMessage))
+{
+    <div style="margin-top: 10px;" class="alert alert-danger">@ErrorMessage</div>
+}
+
+@code {
+    private string Email { get; set; }
+    private string Password { get; set; }
+    private string ErrorMessage { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnLoginSuccess { get; set; }
+
+    private async Task Login()
+    {
+        if (string.IsNullOrEmpty(Email) || string.IsNullOrEmpty(Password))
+        {
+            ErrorMessage = "Все поля должны быть заполнены.";
+            return;
+        }
+
+        var user = context.Users.FirstOrDefault(u => u.Email == Email && u.UserPassword == Password);
+        if (user == null)
+        {
+            ErrorMessage = "Неверный email или пароль.";
+            return;
+        }
+
+        await JSRuntime.InvokeVoidAsync("localStorage.setItem", "user", JsonSerializer.Serialize(user));
+        await OnLoginSuccess.InvokeAsync(true);
+        NavigationManager.NavigateTo("/profile");
+    }
+}

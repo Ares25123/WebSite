@@ -1,0 +1,76 @@
+﻿@page "/counter"
+@using Microsoft.EntityFrameworkCore
+@inject praktikaContext context
+
+<PageTitle>Счётчик Калорий</PageTitle>
+
+<div class="counter-page">
+    <h1 class="text-center mt-5">Счётчик Калорий</h1>
+
+    <div class="row mt-5">
+        <div class="col-md-6">
+            <p role="status">Текущее количество калорий: @currentCount</p>
+            <p role="status">Дневная норма калорий: @dailyCalorieGoal</p>
+        </div>
+        <div class="col-md-6">
+            <h2>Выбрать значение из базы данных</h2>
+            @foreach (var meal in meals)
+            {
+                <button class="btn btn-secondary mb-2" @onclick="() => AddCalories(Convert.ToInt32(meal.Kkal))">@meal.MealName</button>
+            }
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-md-6">
+            <h2>Добавить новое блюдо</h2>
+            <input type="text" class="form-control mb-2" @bind="newMealName" placeholder="Название блюда" />
+            <input type="number" class="form-control mb-2" @bind="newMealKKAL" placeholder="Калории" />
+            <input type="text" class="form-control mb-2" @bind="newMealDescription" placeholder="Описание блюда" />
+            <input type="text" class="form-control mb-2" @bind="newMealPreparationTime" placeholder="Время приготовления" />
+            <button class="btn btn-success" @onclick="AddNewMeal">Добавить блюдо</button>
+        </div>
+    </div>
+</div>
+@code {
+    private int currentCount = 0;
+    private int dailyCalorieGoal = 2000; 
+    private List<Meal> meals = new List<Meal>();
+    private string newMealName = "";
+    private int newMealKKAL = 0;
+    private string newMealDescription = "";
+    private TimeSpan newMealPreparationTime;
+
+    protected override async Task OnInitializedAsync()
+    {
+        meals = await context.Meals.ToListAsync();
+    }
+
+    private void AddCalories(int calories)
+    {
+        currentCount += calories;
+    }
+
+    private void AddNewMeal()
+    {
+        if (!string.IsNullOrWhiteSpace(newMealName) && newMealKKAL > 0 && !string.IsNullOrWhiteSpace(newMealDescription))
+        {
+            var newMeal = new Meal
+                {
+                    MealName = newMealName,
+                    Kkal = newMealKKAL,
+                    MealDescription = newMealDescription,
+                    PreparatonTime = newMealPreparationTime,
+                    CreatedBy = 1,
+                    CreatedAt = DateTime.Now
+                };
+            context.Meals.Add(newMeal);
+            context.SaveChanges();
+            newMealName = "";
+            newMealKKAL = 0;
+            newMealDescription = "";
+            newMealPreparationTime = TimeSpan.Zero;
+            meals = context.Meals.ToList();
+        }
+    }
+}

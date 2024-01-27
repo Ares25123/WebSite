@@ -1,0 +1,71 @@
+﻿@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Web2</PageTitle>
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+        <div class="top-row px-4">
+            @if (IsAuthenticated)
+            {
+                <button class="btn btn-primary" @onclick="GoToProfile">Profile</button>
+                <button class="btn btn-primary custom-margin-left" @onclick="SignOut">Sign out</button>
+            }
+            else
+            {
+                <button class="btn btn-primary" @onclick="GoToSignIn">Sign in</button>
+                <button class="btn btn-primary custom-margin-left" @onclick="GoToSignUp">Sign up</button>
+            }
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+
+@code {
+    private bool IsAuthenticated { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await CheckAuthenticationStatus();
+        }
+    }
+
+    private async Task CheckAuthenticationStatus()
+    {
+        var userJson = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "user");
+        IsAuthenticated = !string.IsNullOrEmpty(userJson);
+        StateHasChanged();
+    }
+
+    private void GoToSignIn()
+    {
+        NavigationManager.NavigateTo("signin");
+    }
+
+    private void GoToSignUp()
+    {
+        NavigationManager.NavigateTo("signup");
+    }
+
+    private void GoToProfile()
+    {
+        NavigationManager.NavigateTo("/profile");
+    }
+
+    private async Task SignOut()
+    {
+        await JSRuntime.InvokeVoidAsync("localStorage.removeItem", "user");
+        await CheckAuthenticationStatus();
+        NavigationManager.NavigateTo("/");
+    }
+}

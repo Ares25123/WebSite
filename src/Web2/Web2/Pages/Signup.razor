@@ -1,0 +1,105 @@
+﻿@page "/signup"
+@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
+@inject praktikaContext context
+
+<link href="css/site.css" rel="stylesheet" />
+
+<h3>Регистрация</h3>
+
+<hr />
+
+@if (!IsRegistrationSuccessful)
+{
+    <div style="margin-bottom: 10px;">
+        <h4>Surname: </h4>
+        <input type="text" class="form-control" placeholder="Enter surname" @bind-value="Surname" />
+    </div>
+    <div style="margin-bottom: 10px;">
+        <h4>Username: </h4>
+        <input type="text" class="form-control" placeholder="Enter username" @bind-value="Username" />
+    </div>
+
+    <div style="margin-bottom: 10px;">
+        <h4>Email: </h4>
+        <input type="email" class="form-control" placeholder="Enter email" @bind-value="Email" />
+    </div>
+
+    <div style="margin-bottom: 10px;">
+        <h4>Password: </h4>
+        <input type="password" class="form-control" placeholder="Enter password" @bind-value="Password" />
+    </div>
+    <div style="margin-bottom: 10px;">
+        <h4>Height: </h4>
+        <input type="number" class="form-control" placeholder="Enter height" @bind-value="Height" />
+    </div>
+    <div style="margin-bottom: 10px;">
+        <h4>Weight: </h4>
+        <input type="number" class="form-control" placeholder="Enter weight" @bind-value="Weight" />
+    </div>
+    <div style="margin-bottom: 10px;">
+        <h4>Sex: </h4>
+        <input type="text" class="form-control" placeholder="Enter sex(M or W)" @bind-value="Sex" />
+    </div>
+
+
+    <button class="btn btn-primary" @onclick="Registration">Create an account</button>
+
+    @if (!string.IsNullOrEmpty(ErrorMessage))
+    {
+        <div style="margin-bottom: 10px;" class="alert alert-danger">@ErrorMessage</div>
+    }
+}
+else
+{
+    <div class="alert alert-success">Регистрация прошла успешно</div>
+}
+
+@code {
+    private string Surname { get; set; }
+    private string Username { get; set; }
+    private string Email { get; set; }
+    private string Password { get; set; }
+    private int Created_by { get; set; }
+    private DateTime Created_at { get; set; }
+    private double Height { get; set; }
+    private double Weight { get; set; }
+    private string Sex { get; set; }
+    private string ErrorMessage { get; set; }
+    private bool IsRegistrationSuccessful { get; set; }
+
+    private async Task Registration()
+    {
+        if (string.IsNullOrEmpty(Username) || string.IsNullOrEmpty(Email) || string.IsNullOrEmpty(Password))
+        {
+            ErrorMessage = "Все поля должны быть заполнены.";
+            return;
+        }
+
+        var existingUser = context.Users.FirstOrDefault(u => u.Email == Email);
+        if (existingUser != null)
+        {
+            ErrorMessage = "Пользователь с такой почтой уже существует.";
+            return;
+        }
+
+        var user = new User
+            {
+                Surname = Surname,
+                Username = Username,
+                Email = Email,
+                UserPassword = Password,
+                CreatedBy = 1,
+                CreatedAt = DateTime.Now,
+                Height = Height,
+                Weight = Weight,
+                Sex = Sex
+            };
+
+        context.Users.Add(user);
+
+        await context.SaveChangesAsync();
+
+        IsRegistrationSuccessful = true;
+    }
+}
