@@ -2445,11 +2445,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Ares\\Desktop\\visualstudio\\Web2\\Web2\\Web2.csproj",
+      "projectUniqueName": "C:\\Users\\Ares\\Documents\\GitHub\\WebSite\\src\\Web2\\Web2\\Web2.csproj",
       "projectName": "Web2",
-      "projectPath": "C:\\Users\\Ares\\Desktop\\visualstudio\\Web2\\Web2\\Web2.csproj",
+      "projectPath": "C:\\Users\\Ares\\Documents\\GitHub\\WebSite\\src\\Web2\\Web2\\Web2.csproj",
       "packagesPath": "C:\\Users\\Ares\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Ares\\Desktop\\visualstudio\\Web2\\Web2\\obj\\",
+      "outputPath": "C:\\Users\\Ares\\Documents\\GitHub\\WebSite\\src\\Web2\\Web2\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

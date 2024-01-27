@@ -60,7 +60,7 @@ a, .btn-link {
         margin-bottom: 1rem;
     }
 
-    /* Дополнительные стили для страницы counter */
+    
     .counter-page .counter-section {
         background-color: #fff;
         padding: 20px;
@@ -82,13 +82,13 @@ a, .btn-link {
     color: #fff;
     background-color: #e6c2a8;
     border-color: #ffffff;
-    cursor: pointer; /* Изменение курсора при наведении */
+    cursor: pointer; 
 }
 
 .btn.active {
-    background-color: #47392d; /* Цвет фона при активном состоянии */
-    color: white; /* Цвет текста при активном состоянии */
-    border-color: #47392d; /* Цвет обводки при активном состоянии */
+    background-color: #47392d; 
+    color: white;
+    border-color: #47392d; 
 }
 
 .btn-primary {

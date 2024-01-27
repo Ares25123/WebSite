@@ -56,7 +56,7 @@
     }
 
     .collapse[b-qeu2mu5ckt] {
-        /* Never collapse the sidebar for wide screens */
+
         display: block;
     }
 }
